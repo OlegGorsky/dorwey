@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аватарка пользователя и глитч-эффект</title>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dialog-width: 15rem;
+            --dialog-height: 4rem;
+            --dialog-font-size: 0.8rem;
+            --dialog-padding: 0.5rem;
+            --dialog-bg-color: #ffffff;
+            --dialog-border-color: #000;
+            --glitch-speed: 1.5s;
+            --glitch-font-weight: 700;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Отключение горизонтальной прокрутки */
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh; /* Обеспечение вертикального скроллинга */
+            margin: 0;
+            padding: 0;
+            font-family: 'Unbounded', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0; /* Фон для страницы */
+        }
+
+        .fly-user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #00d6ca;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            color: #000;
+            width: 90%;
+            max-width: 20rem;
+            text-align: center;
+            box-shadow: 0 0 1.25rem #00d6ca;
+            margin: 2.5rem auto;
+            margin-top: 5px;
+        }
+
+        .fly-avatar {
+            width: 3.75rem;
+            height: 3.75rem;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .fly-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fly-user-message {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-points {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #d6000c;
+        }
+
+        .glitch-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .glitch {
+            position: relative;
+            font-size: 1.8rem;
+            font-weight: var(--glitch-font-weight);
+            color: #FFFFFF;
+            letter-spacing: 0.0625rem;
+            text-transform: uppercase;
+            z-index: 1;
+            margin-top: -1rem;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.8;
+            font-weight: var(--glitch-font-weight);
+            letter-spacing: 0.0625rem;
+        }
+
+        .glitch::before {
+            animation: glitch-effect var(--glitch-speed) ease-in-out infinite;
+            color: #00FFFF;
+            z-index: -1;
+            transform: translate(1px, 1px);
+        }
+
+        .glitch::after {
+            animation: glitch-effect var(--glitch-speed) ease-in-out reverse infinite;
+            color: #FF00FF;
+            z-index: -2;
+            transform: translate(-1px, -1px);
+        }
+
+        @keyframes glitch-effect {
+            0% { transform: translate(0) scale(1); }
+            15% { transform: translate(-1px, 1px) scale(1.02); }
+            30% { transform: translate(1px, -1px) rotate(-0.5deg); }
+            45% { transform: translate(-1.5px, 1.5px) scale(0.98); }
+            60% { transform: translate(1.5px, -1.5px) rotate(0.5deg); }
+            75% { transform: translate(-1px, 1px) scale(1.01); }
+            90% { transform: translate(0.5px, -0.5px) rotate(-0.2deg); }
+            100% { transform: translate(0) scale(1); }
+        }
+
+        .image-dialog-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0rem;
+            width: 90%;
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            width: 17rem;
+            height: auto;
+            margin-left: 40px;
+        }
+
+        .dialog-wrapper {
+            margin-top: 0rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
+        .dialog-box {
+            width: var(--dialog-width);
+            height: var(--dialog-height);
+            background-color: var(--dialog-bg-color);
+            border: 2px solid var(--dialog-border-color);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: var(--dialog-font-size);
+            color: #000;
+            padding: var(--dialog-padding);
+            line-height: 1.4;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-left: 40px;
+        }
+
+        .next-button {
+            padding: 0.625rem 1.25rem;
+            background-color: #DBFE01;
+            color: #000;
+            border: none;
+            border-radius: 0.3125rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: inherit;
+            width: 180px;
+            margin-left: 40px;
+        }
+
+        .next-button:hover {
+            background-color: #C8E101;
+        }
+    </style>
+</head>
+<body>
+    <div class="fly-user-info">
+        <div class="fly-avatar">
+            <img id="fly-user-avatar" src="https://files.salebot.pro/uploads/file_item/32672387/file/44501/unnamed__2_.jpg" alt="User Avatar">
+        </div>
+        <div id="fly-user-message" class="fly-user-message">...</div>
+        <div id="user-points" class="user-points">Накоплено ЕжКоинов: ...</div>
+    </div>
+
+    <div class="glitch-wrapper">
+        <div class="glitch" data-text="Дорвейный розыгрыш">Дорвейный розыгрыш</div>
+    </div>
+
+    <div class="image-dialog-wrapper">
+        <div class="image-wrapper">
+            <img src="/dorwey/image/tild3634-3934-4531-b035-343964383263__photo_result.webp" alt="Ёжик">
+        </div>
+        <div class="dialog-wrapper">
+            <div class="dialog-box" id="dialog-box">
+                <p id="dialog-text">Жми на кнопку, расскажу, как тут всё устроено!</p>
+            </div>
+            <button id="next-btn" class="next-button">Расскажи!</button>
+        </div>
+    </div>
+
+    <script>
+        if (!window.defaultAvatar) {
+            window.defaultAvatar = 'https://files.salebot.pro/uploads/file_item/32672387/file/44501/unnamed__2_.jpg';
+        }
+
+        if (!window.messages) {
+            window.messages = [
+                "Тут ты можешь собирать ёжкоины за задания.",
+                "Приглашай друзей и получай бонусы!",
+                "Зарабатывай ещё больше, участвуя в рейтингах.",
+                "Собери достаточно ёжкоинов и участвуй в розыгрышах.",
+                "Теперь ты знаешь, что делать. Удачи!"
+            ];
+        }
+
+        if (!window.messageIndex) {
+            window.messageIndex = 0;
+        }
+
+        async function fetchUserInfo() {
+            const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            if (!user) return;
+
+            document.getElementById('fly-user-message').textContent = `${user.first_name || 'Без имени'} теперь с Ежами!`;
+            document.getElementById('fly-user-avatar').src = user.photo_url || window.defaultAvatar;
+
+            try {
+                const response = await fetch(`/api/balance?userId=${user.id}`);
+                const data = await response.json();
+                const points = data.points || 0;
+                document.getElementById('user-points').textContent = `Накоплено ЕжКоинов: ${points}`;
+            } catch (err) {
+                document.getElementById('user-points').textContent = 'Накоплено ЕжКоинов: недоступно';
+            }
+        }
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            const dialogText = document.getElementById('dialog-text');
+            dialogText.textContent = window.messages[window.messageIndex];
+            window.messageIndex = (window.messageIndex + 1) % window.messages.length;
+        });
+
+        fetchUserInfo();
+    </script>
+</body>
+</html>

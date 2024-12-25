@@ -1,0 +1,88 @@
+/* Сброс стилей */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Убираем прокрутку страницы */
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Основной контент */
+#content {
+  width: 100%;
+  height: calc(100vh - 60px); /* Высота экрана за вычетом панели вкладок */
+  overflow-y: auto; /* Добавляем прокрутку для контента */
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на мобильных устройствах */
+  background: linear-gradient(to bottom, #27161c, #1a1b1d, #301447); /* Фон для всех вкладок */
+  padding: 20px; /* Отступы для контента */
+  color: white; /* Белый текст для контраста */
+}
+
+/* Панель вкладок */
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #3c1e29; /* Цвет фона панели */
+  z-index: 10; /* Панель всегда поверх других элементов */
+}
+
+/* Кнопки вкладок */
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  background: none;
+  color: #ffffff; /* Цвет текста вкладок */
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #ffdd57; /* Выделение активной вкладки */
+}
+
+/* Иконки вкладок */
+.tab-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 5px;
+  max-width: 20px;
+  max-height: 20px;
+}
+
+/* Текст вкладок */
+.tab-text {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+/* Адаптивность для узких экранов */
+@media (max-width: 480px) {
+  .tab-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .tab-text {
+    font-size: 10px;
+  }
+}

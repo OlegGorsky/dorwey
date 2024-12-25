@@ -1,0 +1,128 @@
+<div class="fly-container">
+  <article id="fly-special-block">
+    <img src="https://files.salebot.pro/uploads/file_item/file/44501/Telegram.png" alt="Telegram Icon" class="fly-img" />
+  </article>
+
+  <div class="container">
+    <span id="unique-text">🪙+300</span>
+  </div>
+  
+  <div id="fly-foot">
+    Подписывайся на Telegram-канал: 
+    <a href="https://t.me/ezhhhhhhhhhhhhhhhhhhh">Еж про деньги 🦔</a>
+  </div>
+  
+  <div id="button-container" class="button-container">
+    <button id="check-subscription">Проверить подписку</button>
+  </div>
+</div>
+
+<style>
+  .fly-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    box-sizing: border-box;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  #fly-special-block {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .fly-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  #unique-icon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 5px;
+  }
+
+  #unique-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  #fly-foot {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  a:link {
+    color: #00D6CA;
+    text-decoration: none;
+  }
+
+  .button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  #check-subscription {
+    width: 250px;
+    height: 50px;
+    border-radius: 8px;
+    background-color: #00D6CA;
+    color: black;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(0, 214, 202, 0.5);
+    cursor: pointer;
+    border: none;
+  }
+</style>
+
+<script>
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+    const userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+
+    const checkSubscriptionStatus = async () => {
+      try {
+        // Формируем GET-запрос с параметром userId
+        const response = await fetch(`https://gorskyapp.ru/api/check-subscription?userId=${userId}`, {
+          method: 'GET'
+        });
+        const data = await response.json();
+
+        // Обрабатываем ответ сервера
+        if (data.is_subscribed) {
+          if (data.message === 'User subscribed, points added.') {
+            alert('Отлично! Тебе начислено 300 ЕжКоинов!');
+          } else {
+            alert('Ты уже получил свои 300 ЕжКоинов за подписку на канал!');
+          }
+        } else {
+          alert('Сначала подпишись на канал и нажми еще раз на кнопку.');
+        }
+      } catch (error) {
+        console.error('Ошибка при проверке подписки:', error);
+        alert('Произошла ошибка. Попробуй снова позже.');
+      }
+    };
+
+    // Добавляем обработчик нажатия на кнопку
+    document.getElementById('check-subscription').addEventListener('click', checkSubscriptionStatus);
+  } else {
+    console.error('Telegram WebApp API недоступен. Убедитесь, что вы используете Telegram WebApp.');
+  }
+</script>

@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: transparent;
+    overflow: hidden; /* Отключаем скроллинг */
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .balanceContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .coin {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .imageContainer {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .image {
+    width: 300px;
+    height: auto;
+    transition: transform 0.1s ease;
+  }
+  
+  .image:active {
+    transform: scale(0.95); /* Эффект уменьшения при нажатии */
+  }
+  
+  .tap-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    font-weight: bold;
+    color: #00ff00;
+    display: none;
+    animation: fadeOut 1s ease-in-out;
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(2);
+    }
+  }
+  

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Рейтинг участников</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: auto;
+      overflow-x: hidden;
+      background-color: #1a1a1a;
+      font-family: Arial, sans-serif;
+      color: #f5f5f5;
+    }
+
+    body {
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .ranking-list {
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #333;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .ranking-item .place {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    .ranking-item .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #555;
+      margin: 0 15px;
+    }
+
+    .ranking-item .user-info {
+      flex-grow: 1;
+    }
+
+    .ranking-item .name {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .ranking-item .points {
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    .error, .loading {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Рейтинг участников</h1>
+    <div id="loading" class="loading">Загрузка...</div>
+    <div id="error" class="error" style="display: none;">Не удалось загрузить данные. Попробуйте позже.</div>
+    <ul id="ranking-list" class="ranking-list" style="display: none;"></ul>
+  </div>
+
+  <script>
+    (() => {
+      const API_PARTICIPANTS_URL = 'https://gorskyapp.ru/api/participants';
+      const API_USER_INFO_URL = 'https://gorskyapp.ru/api/user-info';
+
+      async function fetchParticipants() {
+        const response = await fetch(API_PARTICIPANTS_URL);
+        if (!response.ok) {
+          throw new Error('Ошибка получения данных участников');
+        }
+        return response.json();
+      }
+
+      async function fetchUserInfo(userId) {
+        const response = await fetch(`${API_USER_INFO_URL}?userId=${userId}`);
+        if (!response.ok) {
+          throw new Error(`Ошибка получения данных для пользователя ${userId}`);
+        }
+        return response.json();
+      }
+
+      async function displayRanking() {
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const rankingList = document.getElementById('ranking-list');
+
+        loadingElement.style.display = 'block';
+        errorElement.style.display = 'none';
+        rankingList.style.display = 'none';
+
+        try {
+          const { participants } = await fetchParticipants();
+
+          const listItems = await Promise.all(
+            participants.map(async (participant, index) => {
+              const { name, avatar_url } = await fetchUserInfo(participant.telegram_id);
+
+              const medal =
+                index === 0
+                  ? '🥇'
+                  : index === 1
+                  ? '🥈'
+                  : index === 2
+                  ? '🥉'
+                  : '';
+
+              return `
+                <li class="ranking-item">
+                  <span class="place">${index + 1}</span>
+                  <img src="${avatar_url || ''}" alt="Avatar" class="avatar">
+                  <div class="user-info">
+                    <span class="name">${name || 'Неизвестно'}</span>
+                    <span class="points">Баллы: ${participant.points}</span>
+                  </div>
+                  <span class="medal">${medal}</span>
+                </li>
+              `;
+            })
+          );
+
+          rankingList.innerHTML = listItems.join('');
+          rankingList.style.display = 'block';
+        } catch (error) {
+          console.error('Ошибка отображения рейтинга:', error);
+          errorElement.style.display = 'block';
+        } finally {
+          loadingElement.style.display = 'none';
+        }
+      }
+
+      displayRanking();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тапалка</title>
+    <style>
+        body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%; /* Занимает всю ширину экрана */
+      height: 100%; /* Занимает всю высоту экрана */
+      display: flex;
+      flex-direction: column;
+      background-color: transparent;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden; /* Убирает горизонтальную прокрутку */
+    }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px; /* Увеличен отступ сверху страницы */
+            margin-bottom: 20px; /* Отступ между балансом и ежом */
+        }
+
+        .coin-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coin {
+            width: 50px;
+            height: 50px;
+        }
+
+        .balance {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+
+        .tap-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .tap-image {
+            width: 450px; /* Увеличен размер картинки с ежом */
+            height: 450px; /* Увеличен размер картинки с ежом */
+            object-fit: contain;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .tap-image.active {
+            transform: scale(0.9);
+        }
+
+        .pop-up {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+            opacity: 1;
+            animation: fadeOut 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="app-root"></div>
+
+    <script>
+        (function () {
+            const serverUrl = "https://gorskyapp.ru/api";
+            let userId = null;
+
+            // Telegram WebApp API инициализация
+            Telegram.WebApp.ready();
+            userId = Telegram.WebApp.initDataUnsafe?.user?.id;
+
+            // Рендеринг приложения
+            function renderApp() {
+                const root = document.getElementById("app-root");
+                root.innerHTML = `
+                    <div class="header">
+                        <div class="coin-container">
+                            <img class="coin" src="https://files.salebot.pro/uploads/file_item/file/44501/1ежкоин.png" alt="Coin">
+                            <div class="balance" id="balance">0</div>
+                        </div>
+                    </div>
+                    <div class="tap-area" id="tap-area">
+                        <img class="tap-image" id="tap-image" src="https://files.salebot.pro/uploads/file_item/file/44501/tild6164-3131-4538-b864-343962326538___.png" alt="Tap Image">
+                    </div>
+                `;
+
+                initializeHandlers();
+                fetchBalance();
+            }
+
+            // Функция для получения баланса
+            async function fetchBalance() {
+                if (!userId) return;
+                try {
+                    const response = await fetch(`${serverUrl}/balance?userId=${userId}`);
+                    if (!response.ok) throw new Error("Failed to fetch balance");
+                    const data = await response.json();
+                    document.getElementById("balance").textContent = data.points || 0;
+                } catch (error) {
+                    console.error("Error fetching balance:", error);
+                }
+            }
+
+            // Функция для обновления баланса
+            async function updateBalance() {
+                if (!userId) return;
+                try {
+                    const response = await fetch(`${serverUrl}/balance`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userId, increment: 3 })
+                    });
+                    if (!response.ok) throw new Error("Failed to update balance");
+                    const data = await response.json();
+                    document.getElementById("balance").textContent = data.points || 0;
+                } catch (error) {
+                    console.error("Error updating balance:", error);
+                }
+            }
+
+            // Функция для отображения всплывающего текста "+3"
+            function showPopup(x, y) {
+                const popup = document.createElement("div");
+                popup.className = "pop-up";
+                popup.style.left = `${x}px`;
+                popup.style.top = `${y}px`;
+                popup.textContent = "+3";
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 1000);
+            }
+
+            // Инициализация обработчиков событий
+            function initializeHandlers() {
+                const tapArea = document.getElementById("tap-area");
+                const tapImage = document.getElementById("tap-image");
+
+                tapArea.addEventListener("click", (event) => {
+                    const rect = tapArea.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
+
+                    tapImage.classList.add("active");
+                    setTimeout(() => tapImage.classList.remove("active"), 100);
+
+                    showPopup(x, y);
+                    updateBalance();
+
+                    if (Telegram.WebApp.isExpanded) {
+                        Telegram.WebApp.HapticFeedback.impactOccurred("light");
+                    } else if (window.navigator.vibrate) {
+                        window.navigator.vibrate(100);
+                    }
+                });
+            }
+
+            // Обновление при изменении вкладки
+            Telegram.WebApp.onEvent("viewportChanged", () => {
+                renderApp();
+            });
+
+            // Первоначальная загрузка
+            renderApp();
+        })();
+    </script>
+</body>
+</html>

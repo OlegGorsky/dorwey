@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Card with Tabs</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%; /* Занимает всю ширину экрана */
+      height: 100%; /* Занимает всю высоту экрана */
+      display: flex;
+      flex-direction: column;
+      background-color: transparent;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden; /* Убирает горизонтальную прокрутку */
+    }
+
+    #special-block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 50px 0;
+      text-align: center;
+    }
+
+    .glow-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: transparent;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .glow-img:hover {
+      box-shadow: 0 0 20px rgba(255, 215, 0, 1);
+    }
+
+    #foot {
+      font-weight: bold;
+      font-size: 24px;
+      color: rgb(255, 255, 255);
+      margin-top: 20px;
+    }
+
+    .tab-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      width: 150%; /* Уменьшенная ширина вкладок */
+      max-width: 370px;
+      background-color: #212121;
+      color: #fff;
+      padding: 10px;
+      margin: 10px auto;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-button img {
+      width: 35px;
+      height: 35px;
+      margin-right: 10px;
+    }
+
+    .tab-button .left-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .tab-button .right-icon {
+      width: 35px;
+      height: 35px;
+      margin-left: auto;
+    }
+
+    .tab-button p {
+      margin: 0;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .tab-button .task-reward {
+      font-size: 12px;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab-button .task-reward img {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+    }
+
+    .bottom-panel {
+      position: fixed;
+      left: 50%;
+      bottom: -100%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      max-height: calc(100vh - 20px);
+      height: 70%;
+      background-color: #2c2c2c;
+      color: #ffffff;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      transition: bottom 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .show-panel {
+      bottom: 0;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .panel-content {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      margin-top: -90px;
+    }
+  </style>
+</head>
+<body>
+
+<article id="special-block">
+  <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="EzhCoin" class="glow-img" />
+  <div id="foot">Зарабатывай баллы на Еже!</div>
+</article>
+
+<article class="tab-button" id="tab1">
+  <div class="left-content">
+    <img src="https://files.salebot.pro/uploads/file_item/file/44501/Telegram.png" alt="Telegram Icon">
+    <div>
+      <p>Подписывайся на Telegram-канал</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<article class="tab-button" id="tab2">
+  <div class="left-content">
+    <img src="https://files.salebot.pro/uploads/file_item/file/44501/Youtube.png" alt="YouTube Icon">
+    <div>
+      <p>Подписывайся на Youtube</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<article class="tab-button" id="tab3">
+  <div class="left-content">
+    <img src="/dorwey/image/Yandex_Zen_logo_icon.svg_result.webp" alt="Telegram Icon">
+    <div>
+      <p>Подписывайся на третий канал</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<article class="tab-button" id="tab4">
+  <div class="left-content">
+    <img src="/dorwey/image/VK_result.webp" alt="Telegram Icon">
+    <div>
+      <p>Подписывайся на четвертый канал</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<article class="tab-button" id="tab5">
+  <div class="left-content">
+    <img src="/dorwey/image/Tiktok_result.webp" alt="Telegram Icon">
+    <div>
+      <p>Подписывайся на пятый канал</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<article class="tab-button" id="tab6">
+  <div class="left-content">
+    <img src="/dorwey/image/Instagram_result.webp" alt="Instagram Icon">
+    <div>
+      <p>Подписывайся на шестой канал</p>
+      <p class="task-reward">
+        <img src="https://files.salebot.pro/uploads/file_item/file/44501/1%D0%B5%D0%B6%D0%BA%D0%BE%D0%B8%D0%BD.png" alt="Coin Icon"> +300 баллов
+      </p>
+    </div>
+  </div>
+  <img src="/dorwey/image/галочка2.png" alt="Check Icon" class="right-icon">
+</article>
+
+<div class="bottom-panel" id="bottomPanel">
+  <button class="close-btn" id="closeBtn">&times;</button>
+  <div class="panel-content" id="panelContent"></div>
+</div>
+
+<script>
+function openTab(url) {
+  var panel = document.getElementById('bottomPanel');
+  var panelContent = document.getElementById('panelContent');
+
+  url += (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+
+  panel.classList.add('show-panel');
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.text();
+    })
+    .then(data => {
+      panelContent.innerHTML = data;
+      executeInlineScripts(panelContent);
+    })
+    .catch(error => {
+      console.error('Ошибка загрузки:', error);
+      panelContent.innerHTML = '<p>Контент не доступен. Панель всё равно открыта.</p>';
+    });
+}
+
+function executeInlineScripts(element) {
+  const scripts = element.getElementsByTagName('script');
+  for (let i = 0; i < scripts.length; i++) {
+    const script = document.createElement('script');
+    script.text = scripts[i].innerText;
+    document.head.appendChild(script).parentNode.removeChild(script);
+  }
+}
+
+document.getElementById('tab1').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but1.html');
+});
+document.getElementById('tab2').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but2.html');
+});
+document.getElementById('tab3').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but3.html');
+});
+document.getElementById('tab4').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but4.html');
+});
+document.getElementById('tab5').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but5.html');
+});
+document.getElementById('tab6').addEventListener('click', function() {
+  openTab('/dorwey/tabs/panel/but6.html');
+});
+
+document.getElementById('closeBtn').addEventListener('click', function() {
+  var panel = document.getElementById('bottomPanel');
+  panel.classList.remove('show-panel');
+});
+</script>
+
+</body>
+</html>

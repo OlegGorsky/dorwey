@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка подписки на VK</title>
+  <style>
+    .fly-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px;
+      box-sizing: border-box;
+      max-width: 300px;
+      margin: 0 auto;
+      border-radius: 8px;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    #fly-special-block {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .fly-img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    #unique-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    #fly-foot {
+      font-size: 14px;
+      color: white;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    a:link,
+    a:visited {
+      color: #00D6CA;
+      text-decoration: none;
+    }
+
+    .button-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    #check-vk-subscription {
+      width: 250px;
+      height: 50px;
+      border-radius: 8px;
+      background-color: #00D6CA;
+      color: black;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(0, 214, 202, 0.5);
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    #check-vk-subscription:hover {
+      background-color: #00b3a0;
+    }
+
+    #check-vk-subscription:active {
+      background-color: #009d8b;
+    }
+  </style>
+</head>
+<body>
+<div class="fly-container">
+  <article id="fly-special-block">
+    <img src="/dorwey/image/VK_result.webp" alt="VK Icon" class="fly-img"/>
+  </article>
+
+  <div class="container">
+    <span id="unique-text">🪙 +300</span>
+  </div>
+
+  <div id="fly-foot">
+    Подписывайтесь на группу VK:
+    <a href="https://vk.com/floy_music" id="vk-link" target="_blank">FLOY Music</a>
+  </div>
+
+  <div id="button-container" class="button-container">
+    <button id="check-vk-subscription">Проверить подписку</button>
+  </div>
+</div>
+
+<script>
+  if (window.Telegram && window.Telegram.WebApp) {
+    let userId;
+
+    try {
+      userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    } catch (error) {
+      console.error('Не удалось получить userId:', error);
+      userId = null;
+    }
+
+    if (!userId) {
+      alert('Ошибка: Не удалось получить ваш идентификатор. Перезапустите Telegram WebApp.');
+    } else {
+      const vkLink = 'https://vk.com/floy_music';
+
+      const checkVkSubscriptionStatus = async () => {
+        try {
+          const response = await fetch('https://gorskyapp.ru/api/check-vk-subscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userId }),
+          });
+
+          let data;
+          try {
+            data = await response.json();
+          } catch (error) {
+            alert('Ошибка: Некорректный ответ от сервера.');
+            return;
+          }
+
+          if (!response.ok) {
+            alert(data.message || 'Произошла ошибка.');
+            return;
+          }
+
+          switch (data.message) {
+            case 'Timer started. Please subscribe and come back.':
+              alert('Перенаправляем тебя в группу VK!');
+              window.open(vkLink, '_blank');
+              break;
+
+            case 'Checking subscription. Please wait.':
+              alert('Подписка проверяется. Пожалуйста, подожди.');
+              break;
+
+            case '300 points credited for VK subscription.':
+              alert('Тебе начислено 300 ЕжКоинов за подписку!');
+              break;
+
+            case 'Points already credited for VK subscription.':
+              alert('Ты уже получил бонус за подписку на VK!');
+              break;
+
+            case 'Already subscribed to vk':
+              alert('Ты уже подписан на VK.');
+              break;
+
+            default:
+              alert('Произошла ошибка. Попробуй позже.');
+          }
+        } catch (error) {
+          console.error('Ошибка:', error);
+          alert('Произошла ошибка. Попробуй позже.');
+        }
+      };
+
+      document.getElementById('check-vk-subscription').addEventListener('click', checkVkSubscriptionStatus);
+    }
+  }
+</script>
+</body>
+</html>

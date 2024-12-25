@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Уроки</title>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Unbounded', sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 0 20px;
+      margin: 0;
+    }
+    .lesson {
+      display: none;
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .lesson.active {
+      display: block;
+    }
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .lesson-header .lesson-counter {
+      font-size: 18px;
+    }
+    .title-wrapper {
+      background-color: #DBFE01;
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      padding: 10px 0;
+    }
+    h2 {
+      font-size: 22px;
+      margin: 0;
+      color: #000;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      height: 0;
+      overflow: hidden;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #00d6ca;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/dorwey/image/Screenshot_17_result.webp');
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .play-button {
+      width: 60px;
+      height: 60px;
+      background-color: rgba(0, 0, 0, 0.6);
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .play-button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .btn-nav, .btn-below-video {
+      background-color: #00d6ca;
+      color: #111;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px #00d6ca;
+    }
+    .btn-below-video {
+      margin-top: 15px;
+      display: inline-block;
+    }
+    .btn-nav:hover, .btn-below-video:hover {
+      background-color: #00b5a8;
+      box-shadow: 0 0 15px #00d6ca;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Урок 1 -->
+  <div class="lesson active" id="lesson1">
+    <div class="lesson-header">
+      <span class="lesson-counter">Урок 1 из 3</span>
+      <button class="btn-nav" onclick="showLesson(2)">→</button>
+    </div>
+    <div class="title-wrapper">
+      <h2>Как делать меньше, а расти быстрее?</h2>
+    </div>
+    <p>Почему видео - ваш самый мощный инструмент роста аудитории и продаж?</p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/ID_ВИДЕО1" title="Урок 1" allow="autoplay; encrypted-media"></iframe>
+      <div class="overlay" onclick="hideOverlay(this)">
+        <button class="play-button">▶</button>
+      </div>
+    </div>
+    <button class="btn-below-video" onclick="showLesson(2)">Посмотреть второе видео</button>
+  </div>
+
+  <!-- Урок 2 -->
+  <div class="lesson" id="lesson2">
+    <div class="lesson-header">
+      <button class="btn-nav" onclick="showLesson(1)">←</button>
+      <span class="lesson-counter">Урок 2 из 3</span>
+      <button class="btn-nav" onclick="showLesson(3)">→</button>
+    </div>
+    <div class="title-wrapper">
+      <h2>Создание мощных видео для роста бизнеса</h2>
+    </div>
+    <p>Узнайте, как сделать ваши видео еще более эффективными.</p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/ID_ВИДЕО2" title="Урок 2" allow="autoplay; encrypted-media"></iframe>
+      <div class="overlay" onclick="hideOverlay(this)">
+        <button class="play-button">▶</button>
+      </div>
+    </div>
+    <button class="btn-below-video" onclick="showLesson(3)">Посмотреть третье видео</button>
+  </div>
+
+  <!-- Урок 3 -->
+  <div class="lesson" id="lesson3">
+    <div class="lesson-header">
+      <button class="btn-nav" onclick="showLesson(2)">←</button>
+      <span class="lesson-counter">Урок 3 из 3</span>
+    </div>
+    <div class="title-wrapper">
+      <h2>Заключительные советы для роста и успеха</h2>
+    </div>
+    <p>Завершите обучение, чтобы достичь наилучших результатов.</p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/ID_ВИДЕО3" title="Урок 3" allow="autoplay; encrypted-media"></iframe>
+      <div class="overlay" onclick="hideOverlay(this)">
+        <button class="play-button">▶</button>
+      </div>
+    </div>
+    <a href="https://doorway5.ru" class="btn-below-video">Перейти на сайт</a>
+  </div>
+
+  <script>
+    function showLesson(lessonNumber) {
+      const lessons = document.querySelectorAll('.lesson');
+      lessons.forEach(lesson => lesson.classList.remove('active'));
+      const lesson = document.getElementById(`lesson${lessonNumber}`);
+      lesson.classList.add('active');
+    }
+    
+    function hideOverlay(overlay) {
+      overlay.style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

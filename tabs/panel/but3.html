@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка подписки на Яндекс.Дзен</title>
+  <style>
+    .fly-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px;
+      box-sizing: border-box;
+      max-width: 300px;
+      margin: 0 auto;
+      border-radius: 8px;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    
+    #fly-special-block {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .fly-img {
+      width: 80px;
+      height: 80px;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    #unique-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    #fly-foot {
+      font-size: 14px;
+      color: white;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    a:link,
+    a:visited {
+      color: #00D6CA;
+      text-decoration: none;
+    }
+    
+    .button-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    #check-zen-subscription {
+      width: 250px;
+      height: 50px;
+      border-radius: 8px;
+      background-color: #00D6CA;
+      color: black;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(0, 214, 202, 0.5);
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+    
+    #check-zen-subscription:hover {
+      background-color: #00b3a0;
+    }
+    
+    #check-zen-subscription:active {
+      background-color: #009d8b;
+    }
+  </style>
+</head>
+<body>
+<div class="fly-container">
+  <article id="fly-special-block">
+    <img src="/dorwey/image/Yandex_Zen_logo_icon.svg_result.webp" alt="Zen Icon" class="fly-img"/>
+  </article>
+
+  <div class="container">
+    <span id="unique-text">🪙 +300</span>
+  </div>
+
+  <div id="fly-foot">
+    Подписывайтесь на Яндекс.Дзен канал:
+    <a href="https://zen.yandex.ru/id/5a44f6513dceb7a8bc57bfc4" id="zen-link" target="_blank">Еж про деньги 🦔</a>
+  </div>
+
+  <div id="button-container" class="button-container">
+    <button id="check-zen-subscription">Проверить подписку</button>
+  </div>
+</div>
+
+<script>
+  // Проверяем, доступен ли Telegram WebApp API
+  if (window.Telegram && window.Telegram.WebApp) {
+    let userId;
+
+    try {
+      userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    } catch (error) {
+      console.error('Не удалось получить userId:', error);
+      userId = null;
+    }
+
+    // Если userId не получен, показываем сообщение об ошибке
+    if (!userId) {
+      console.error('userId не был получен. Проверьте, правильно ли инициализировано Telegram WebApp.');
+      alert('Ошибка: Не удалось получить ваш идентификатор. Перезапустите Telegram WebApp.');
+    } else {
+      const zenLink = 'https://zen.yandex.ru/id/5a44f6513dceb7a8bc57bfc4';
+
+      const checkZenSubscriptionStatus = async () => {
+        try {
+          console.log('Отправка запроса на сервер для проверки подписки на Яндекс.Дзен...');
+
+          // Отправляем POST-запрос на сервер с userId
+          const response = await fetch('https://gorskyapp.ru/api/check-zen-subscription', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId: userId }) // Передаём userId в теле запроса
+          });
+
+          // Логируем весь ответ для отладки
+          console.log('HTTP-статус:', response.status);
+          console.log('Полный ответ от сервера:', response);
+
+          // Проверяем, может ли ответ быть JSON
+          let data;
+          try {
+            data = await response.json();
+            console.log('Ответ сервера (JSON):', data);
+          } catch (jsonError) {
+            console.error('Ошибка парсинга JSON:', jsonError);
+            alert('Ошибка: сервер вернул некорректный ответ.');
+            return;
+          }
+
+          // Если HTTP-статус не OK
+          if (!response.ok) {
+            console.error('Ошибка от сервера:', data);
+            alert(data.message || 'Что-то пошло не так. Попробуйте снова позже.');
+            return;
+          }
+
+          // Обрабатываем успешный ответ
+          switch (data.message) {
+            case 'Timer started. Please subscribe and come back.':
+              alert('Проверяю твою подписку! Перенаправляем тебя на Яндекс.Дзен.');
+              window.open(zenLink, '_blank'); // Открываем Яндекс.Дзен
+              break;
+
+            case 'Checking subscription. Please wait.':
+              alert('Проверяю твою подписку. Пожалуйста, подожди!');
+              break;
+
+            case '300 points credited for Zen subscription.':
+              alert('Отлично! Тебе начислено 300 ЕжКоинов за подписку на Яндекс.Дзен!');
+              break;
+
+            case 'Points already credited for Zen subscription.':
+              alert('Тебе уже начислено 300 ЕжКоинов за подписку на Яндекс.Дзен!');
+              break;
+
+            case 'Already subscribed to zen':
+              alert('Вы уже подписаны на Яндекс.Дзен. Проверьте другие бонусы!');
+              break;
+
+            default:
+              alert('Произошла ошибка. Попробуй снова позже.');
+          }
+        } catch (error) {
+          console.error('Ошибка при проверке подписки на Яндекс.Дзен:', error);
+          alert('Произошла ошибка. Попробуй снова позже.');
+        }
+      };
+
+      // Добавляем обработчик события клика на кнопку
+      document.getElementById('check-zen-subscription').addEventListener('click', checkZenSubscriptionStatus);
+    }
+  } else {
+    console.error('Telegram WebApp API недоступен. Убедитесь, что вы используете Telegram WebApp.');
+    alert('Ошибка: Telegram WebApp API недоступен. Попробуйте открыть в Telegram.');
+  }
+</script>
+</body>
+</html>
